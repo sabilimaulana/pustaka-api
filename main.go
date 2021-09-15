@@ -54,9 +54,8 @@ func queryHandler(c *gin.Context) {
 }
 
 type BookInput struct {
-	Title    string
-	Price    int
-	SubTitle string `json:"sub_title"`
+	Title string `json:"title" binding:"required"`
+	Price int    `json:"price" binding:"required,number"`
 }
 
 func postBookHandler(c *gin.Context) {
@@ -65,13 +64,13 @@ func postBookHandler(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&bookInput)
 	if err != nil {
+		c.JSON(http.StatusBadRequest, err)
 		log.Println(err)
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"title":     bookInput.Title,
-		"price":     bookInput.Price,
-		"sub_title": bookInput.SubTitle,
+		"title": bookInput.Title,
+		"price": bookInput.Price,
 	})
 }
