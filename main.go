@@ -18,10 +18,20 @@ func main() {
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-
 	db.AutoMigrate(&book.Book{})
-
 	fmt.Println("Database connection succeed")
+
+	book := book.Book{}
+	book.Title = "Hidup begitu indah dan hanya itu yang kita punya"
+	book.Description = "Buku ini adalah bunga rampai nonfiksi pertama Dea Anugrah."
+	book.Price = 50000
+	book.Discount = 5
+	book.Rating = 5
+
+	err = db.Create(&book).Error
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 	router := gin.Default()
 
