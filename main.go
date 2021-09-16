@@ -21,17 +21,31 @@ func main() {
 	db.AutoMigrate(&book.Book{})
 	fmt.Println("Database connection succeed")
 
-	book := book.Book{}
-	book.Title = "Hidup begitu indah dan hanya itu yang kita punya"
-	book.Description = "Buku ini adalah bunga rampai nonfiksi pertama Dea Anugrah."
-	book.Price = 50000
-	book.Discount = 5
-	book.Rating = 5
+	// book := book.Book{}
+	// book.Title = "Hidup begitu indah dan hanya itu yang kita punya"
+	// book.Description = "Buku ini adalah bunga rampai nonfiksi pertama Dea Anugrah."
+	// book.Price = 50000
+	// book.Discount = 5
+	// book.Rating = 5
 
-	err = db.Create(&book).Error
+	// err = db.Create(&book).Error
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// }
+
+	// var book book.Book
+	var books []book.Book
+
+	err = db.Debug().Where("rating = ?", 5).Find(&books).Error
 	if err != nil {
 		fmt.Println(err.Error())
 	}
+
+	for _, b := range books {
+		fmt.Println(b.Title)
+	}
+
+	// fmt.Println(books)
 
 	router := gin.Default()
 
@@ -43,5 +57,5 @@ func main() {
 	v1.GET("/query", handler.QueryHandler)
 	v1.POST("/book", handler.PostBookHandler)
 
-	router.Run()
+	router.Run(":8888")
 }
