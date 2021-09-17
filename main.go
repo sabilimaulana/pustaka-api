@@ -34,18 +34,34 @@ func main() {
 	// }
 
 	// var book book.Book
-	var books []book.Book
+	// var books []book.Book
 
-	err = db.Debug().Where("rating = ?", 5).Find(&books).Error
+	// err = db.Debug().Where("rating = ?", 5).Find(&books).Error
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// }
+
+	// for _, b := range books {
+	// 	fmt.Println(b.Title)
+	// }
+
+	// fmt.Println(books)
+
+	var book book.Book
+
+	err = db.Debug().Where("id = ?", 1).First(&book).Error
 	if err != nil {
 		fmt.Println(err.Error())
 	}
 
-	for _, b := range books {
-		fmt.Println(b.Title)
-	}
+	book.Title = "Kertas Basah"
+	book.Description = "Kumpulan puisi."
 
-	// fmt.Println(books)
+	err = db.Debug().Save(&book).Error
+
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
 	router := gin.Default()
 
