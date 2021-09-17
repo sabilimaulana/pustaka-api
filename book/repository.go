@@ -4,7 +4,7 @@ import "gorm.io/gorm"
 
 type Repository interface {
 	FindAll() ([]Book, error)
-	FindById(ID int) (Book, error)
+	FindByID(ID int) (Book, error)
 	Create(book Book) (Book, error)
 }
 
@@ -23,7 +23,7 @@ func (r *repository) FindAll() ([]Book, error) {
 	return books, err
 }
 
-func (r *repository) FindById(ID int) (Book, error) {
+func (r *repository) FindByID(ID int) (Book, error) {
 	var book Book
 
 	err := r.db.Find(&book, ID).Error

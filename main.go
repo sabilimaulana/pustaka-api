@@ -22,30 +22,15 @@ func main() {
 	fmt.Println("Database connection succeed")
 
 	// define repository
-	bookRepository := book.NewRepository(db)
+	// bookRepository := book.NewRepository(db)
+	// bookService := book.NewService(bookRepository)
 
-	// Create
-	// book := book.Book{
-	// 	Title:       "Kertas Basah",
-	// 	Description: "Kumpulan puisi.",
-	// 	Price:       50000,
-	// 	Rating:      5,
-	// 	Discount:    5,
+	// bookRequest := book.BookRequest{
+	// 	Title: "Bakat Menggonggong",
+	// 	Price: "40000",
 	// }
-	// bookRepository.Create(book)
 
-	// FindById
-	// var book book.Book
-
-	// book, _ = bookRepository.FindById(3)
-	// fmt.Println("Title :", book.Title)
-	// fmt.Println("Description :", book.Description)
-
-	// FindAll
-	books, _ := bookRepository.FindAll()
-	for _, book := range books {
-		fmt.Println("Title :", book.Title, ", Description :", book.Description)
-	}
+	// bookService.Create(bookRequest)
 
 	router := gin.Default()
 
