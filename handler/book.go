@@ -7,21 +7,29 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func RootHandler(c *gin.Context) {
+type bookHandler struct {
+	bookService book.Service
+}
+
+func NewBookHander(bookService book.Service) *bookHandler {
+	return &bookHandler{bookService}
+}
+
+func (h *bookHandler) RootHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"name": "Sabili Maulana",
 		"bio":  "Sedang belajar golang",
 	})
 }
 
-func HelloHandler(c *gin.Context) {
+func (h *bookHandler) HelloHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"title":    "Hello World",
 		"subtitle": "Belajar golang API with Gin",
 	})
 }
 
-func BooksHandler(c *gin.Context) {
+func (h *bookHandler) BooksHandler(c *gin.Context) {
 	id := c.Param("id")
 	title := c.Param("title")
 
@@ -31,7 +39,7 @@ func BooksHandler(c *gin.Context) {
 	})
 }
 
-func QueryHandler(c *gin.Context) {
+func (h *bookHandler) QueryHandler(c *gin.Context) {
 	title := c.Query("title")
 	price := c.Query("price")
 
@@ -41,11 +49,11 @@ func QueryHandler(c *gin.Context) {
 	})
 }
 
-func PostBookHandler(c *gin.Context) {
+func (h *bookHandler) PostBookHandler(c *gin.Context) {
 	// title, price
-	var bookInput book.BookRequest
+	var bookRequest book.BookRequest
 
-	err := c.ShouldBindJSON(&bookInput)
+	err := c.ShouldBindJSON(&bookRequest)
 	if err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -54,8 +62,14 @@ func PostBookHandler(c *gin.Context) {
 		return
 	}
 
+	book, err := h.bookService.Create(bookRequest)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": err.Error(),
+		})
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"title": bookInput.Title,
-		"price": bookInput.Price,
+		"data": book,
 	})
 }

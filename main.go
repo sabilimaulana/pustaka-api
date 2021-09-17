@@ -19,28 +19,22 @@ func main() {
 		log.Fatal(err.Error())
 	}
 	db.AutoMigrate(&book.Book{})
+
+	bookRepository := book.NewRepository(db)
+	bookService := book.NewService(bookRepository)
+	bookHandler := handler.NewBookHander(bookService)
+
 	fmt.Println("Database connection succeed")
-
-	// define repository
-	// bookRepository := book.NewRepository(db)
-	// bookService := book.NewService(bookRepository)
-
-	// bookRequest := book.BookRequest{
-	// 	Title: "Bakat Menggonggong",
-	// 	Price: "40000",
-	// }
-
-	// bookService.Create(bookRequest)
 
 	router := gin.Default()
 
 	v1 := router.Group("/v1")
 
-	v1.GET("/", handler.RootHandler)
-	v1.GET("/hello", handler.HelloHandler)
-	v1.GET("/book/:id/:title", handler.BooksHandler)
-	v1.GET("/query", handler.QueryHandler)
-	v1.POST("/book", handler.PostBookHandler)
+	v1.GET("/", bookHandler.RootHandler)
+	v1.GET("/hello", bookHandler.HelloHandler)
+	v1.GET("/book/:id/:title", bookHandler.BooksHandler)
+	v1.GET("/query", bookHandler.QueryHandler)
+	v1.POST("/book", bookHandler.PostBookHandler)
 
-	router.Run(":8888")
+	router.Run()
 }
