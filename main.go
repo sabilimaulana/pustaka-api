@@ -21,58 +21,30 @@ func main() {
 	db.AutoMigrate(&book.Book{})
 	fmt.Println("Database connection succeed")
 
-	// book := book.Book{}
-	// book.Title = "Hidup begitu indah dan hanya itu yang kita punya"
-	// book.Description = "Buku ini adalah bunga rampai nonfiksi pertama Dea Anugrah."
-	// book.Price = 50000
-	// book.Discount = 5
-	// book.Rating = 5
+	// define repository
+	bookRepository := book.NewRepository(db)
 
-	// err = db.Create(&book).Error
-	// if err != nil {
-	// 	fmt.Println(err.Error())
+	// Create
+	// book := book.Book{
+	// 	Title:       "Kertas Basah",
+	// 	Description: "Kumpulan puisi.",
+	// 	Price:       50000,
+	// 	Rating:      5,
+	// 	Discount:    5,
 	// }
+	// bookRepository.Create(book)
 
-	// var book book.Book
-	// var books []book.Book
-
-	// err = db.Debug().Where("rating = ?", 5).Find(&books).Error
-	// if err != nil {
-	// 	fmt.Println(err.Error())
-	// }
-
-	// for _, b := range books {
-	// 	fmt.Println(b.Title)
-	// }
-
-	// fmt.Println(books)
-
+	// FindById
 	// var book book.Book
 
-	// err = db.Debug().Where("id = ?", 1).First(&book).Error
-	// if err != nil {
-	// 	fmt.Println(err.Error())
-	// }
+	// book, _ = bookRepository.FindById(3)
+	// fmt.Println("Title :", book.Title)
+	// fmt.Println("Description :", book.Description)
 
-	// book.Title = "Kertas Basah"
-	// book.Description = "Kumpulan puisi."
-
-	// err = db.Debug().Save(&book).Error
-
-	// if err != nil {
-	// 	fmt.Println(err.Error())
-	// }
-
-	var book book.Book
-
-	err = db.Debug().Where("id = ?", 1).First(&book).Error
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	err = db.Debug().Delete(&book).Error
-	if err != nil {
-		fmt.Println(err.Error())
+	// FindAll
+	books, _ := bookRepository.FindAll()
+	for _, book := range books {
+		fmt.Println("Title :", book.Title, ", Description :", book.Description)
 	}
 
 	router := gin.Default()
