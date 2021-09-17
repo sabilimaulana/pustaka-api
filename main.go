@@ -47,6 +47,22 @@ func main() {
 
 	// fmt.Println(books)
 
+	// var book book.Book
+
+	// err = db.Debug().Where("id = ?", 1).First(&book).Error
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// }
+
+	// book.Title = "Kertas Basah"
+	// book.Description = "Kumpulan puisi."
+
+	// err = db.Debug().Save(&book).Error
+
+	// if err != nil {
+	// 	fmt.Println(err.Error())
+	// }
+
 	var book book.Book
 
 	err = db.Debug().Where("id = ?", 1).First(&book).Error
@@ -54,11 +70,7 @@ func main() {
 		fmt.Println(err.Error())
 	}
 
-	book.Title = "Kertas Basah"
-	book.Description = "Kumpulan puisi."
-
-	err = db.Debug().Save(&book).Error
-
+	err = db.Debug().Delete(&book).Error
 	if err != nil {
 		fmt.Println(err.Error())
 	}
