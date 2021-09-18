@@ -32,6 +32,7 @@ func main() {
 
 	v1.GET("/", bookHandler.RootHandler)
 	v1.GET("/books", bookHandler.GetBooks)
+	v1.GET("/book/:id", bookHandler.GetBook)
 	v1.POST("/books", bookHandler.PostBookHandler)
 
 	router.Run()

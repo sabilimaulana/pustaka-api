@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"pustaka-api/book"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -72,5 +74,43 @@ func (h *bookHandler) GetBooks(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": booksResponse,
+	})
+}
+
+func (h *bookHandler) GetBook(c *gin.Context) {
+	idString := c.Param("id")
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": err.Error(),
+		})
+		return
+	}
+
+	b, err := h.bookService.FindByID(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": err.Error(),
+		})
+		return
+	}
+
+	if b.ID == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": errors.New("There is no book with id: " + idString).Error(),
+		})
+		return
+	}
+
+	bookResponse := book.BookResponse{
+		ID:          b.ID,
+		Title:       b.Title,
+		Description: b.Description,
+		Discount:    b.Discount,
+		Rating:      b.Rating,
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": bookResponse,
 	})
 }
