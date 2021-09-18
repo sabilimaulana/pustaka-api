@@ -109,7 +109,41 @@ func convertToBookResponse(b book.Book) book.BookResponse {
 		ID:          b.ID,
 		Title:       b.Title,
 		Description: b.Description,
+		Price:       b.Price,
 		Discount:    b.Discount,
 		Rating:      b.Rating,
 	}
+}
+
+func (h *bookHandler) UpdateBook(c *gin.Context) {
+	idString := c.Param("id")
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": errors.New("param id must be number").Error(),
+		})
+		return
+	}
+
+	var bookRequest book.BookRequest
+
+	err = c.ShouldBindJSON(&bookRequest)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": err.Error(),
+		})
+		return
+	}
+
+	book, err := h.bookService.Update(id, bookRequest)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"errors": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": convertToBookResponse(book),
+	})
 }
