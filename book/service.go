@@ -1,10 +1,16 @@
 package book
 
+import (
+	"errors"
+	"strconv"
+)
+
 type Service interface {
 	FindAll() ([]Book, error)
 	FindByID(ID int) (Book, error)
 	Create(bookRequest BookRequest) (Book, error)
 	Update(ID int, bookRequest BookRequest) (Book, error)
+	Delete(ID int) (Book, error)
 }
 
 type service struct {
@@ -57,5 +63,21 @@ func (s *service) Update(ID int, bookRequest BookRequest) (Book, error) {
 	book.Discount = int(discount)
 
 	s.repository.Update(book)
+	return book, err
+}
+
+func (s *service) Delete(ID int) (Book, error) {
+	book, err := s.repository.FindByID(ID)
+
+	if book.ID == 0 {
+		return book, errors.New("Data with id: " + strconv.Itoa(ID) + " doesn't exist.")
+	}
+
+	if err != nil {
+		return book, err
+	}
+
+	book, err = s.repository.Delete(book)
+
 	return book, err
 }

@@ -104,17 +104,6 @@ func (h *bookHandler) GetBook(c *gin.Context) {
 	})
 }
 
-func convertToBookResponse(b book.Book) book.BookResponse {
-	return book.BookResponse{
-		ID:          b.ID,
-		Title:       b.Title,
-		Description: b.Description,
-		Price:       b.Price,
-		Discount:    b.Discount,
-		Rating:      b.Rating,
-	}
-}
-
 func (h *bookHandler) UpdateBook(c *gin.Context) {
 	idString := c.Param("id")
 	id, err := strconv.Atoi(idString)
@@ -146,4 +135,39 @@ func (h *bookHandler) UpdateBook(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"data": convertToBookResponse(book),
 	})
+}
+
+func (h *bookHandler) DeleteBook(c *gin.Context) {
+	idString := c.Param("id")
+	id, err := strconv.Atoi(idString)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": errors.New("param id must be number").Error(),
+		})
+		return
+	}
+
+	book, err := h.bookService.Delete(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Delete book with id: " + idString + " successfully.",
+		"data":    convertToBookResponse(book),
+	})
+}
+
+func convertToBookResponse(b book.Book) book.BookResponse {
+	return book.BookResponse{
+		ID:          b.ID,
+		Title:       b.Title,
+		Description: b.Description,
+		Price:       b.Price,
+		Discount:    b.Discount,
+		Rating:      b.Rating,
+	}
 }
