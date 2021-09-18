@@ -53,9 +53,24 @@ func (h *bookHandler) GetBooks(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"errors": err.Error(),
 		})
+		return
+	}
+
+	var booksResponse []book.BookResponse
+
+	for _, b := range books {
+		bookResponse := book.BookResponse{
+			ID:          b.ID,
+			Title:       b.Title,
+			Description: b.Description,
+			Discount:    b.Discount,
+			Rating:      b.Rating,
+		}
+
+		booksResponse = append(booksResponse, bookResponse)
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": books,
+		"data": booksResponse,
 	})
 }
